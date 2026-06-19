@@ -8,14 +8,12 @@ function saveScore() {
 
   if (!name || !score) return;
 
-  // Retrieve existing scores from localStorage (or start with empty array)
-  const existing = JSON.parse(localStorage.getItem("highScores") || "[]");
+  // Use key "scores" to match what the tests expect
+  const existing = JSON.parse(localStorage.getItem("scores") || "[]");
 
-  // Add new entry and save back
-  existing.push({ name, score });
-  localStorage.setItem("highScores", JSON.stringify(existing));
+  existing.push({ name, score: Number(score) });
+  localStorage.setItem("scores", JSON.stringify(existing));
 
-  // Clear inputs
   nameInput.value = "";
   scoreInput.value = "";
 
@@ -23,14 +21,16 @@ function saveScore() {
 }
 
 function showScores() {
-  const data = JSON.parse(localStorage.getItem("highScores") || "[]");
+  const data = JSON.parse(localStorage.getItem("scores") || "[]");
 
   if (data.length === 0) {
     scores.textContent = "No scores yet";
     return;
   }
 
-  // Build table with header row + one row per score
+  // Sort descending by score so highest score appears first
+  data.sort((a, b) => b.score - a.score);
+
   let html = "<table><tr><th>Name</th><th>Score</th></tr>";
   data.forEach(({ name, score }) => {
     html += `<tr><td>${name}</td><td>${score}</td></tr>`;
